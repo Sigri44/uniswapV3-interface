@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Uniswap V3 - LP</title>
+  <style>
+   #content {
+    width: 80%; /* Ajustez la largeur de la zone de contenu en fonction de vos préférences */
+    margin: 0 auto; /* Centre la zone de contenu horizontalement */
+    overflow: auto; /* Ajoute un débordement automatique si le contenu est plus large que la fenêtre */
+  }
+
+  #increaseLiquidityForm,
+  #addLiquidityForm {
+    width: 48%;
+    float: left;
+    margin-top: 40px;
+    margin-right: 2%;
+    margin-bottom: 20px; /* Espace entre les deux formulaires */
+  }
+
+  /* Effacer le flottement après les formulaires */
+  #content:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+
+
+
+    #userDetails {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: none;
+    }
+
+    #connectButton, #disconnectButton {
+      top: 20px;
+      right: 20px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Uniswap V3 - LP</h1>
+    
+  <div id="userDetails">
+    <p id="userAddress"></p>
+    <button id="disconnectButton" onclick="disconnect()">Déconnexion</button>
+  </div>
+  
+  <div id="connectButton">
+    <button onclick="connectAndDisplayContent()">Connexion</button>
+  </div>
+  
+  <div id="content" style="display: none;">
+    <p id="userAddress"></p>
+
+    <form id="addLiquidityForm">
+      <label for="add_token0">Token 0 :</label>
+      <select id="add_token0">
+          <option value="0xaf88d065e77c8cC2239327C5EDb3A432268e5831">USDC</option>
+          <option value="0x93b346b6BC2548dA6A1E7d98E9a421B42541425b">LUSD</option>
+          <option value="0xda10009cbd5d07dd0cecc66161fc93d7c9000da1">DAI</option>
+          <option value="0x82af49447d8a07e3bd95bd0d56f35241523fbab1">wETH</option>
+          <option value="0x5979D7b546E38E414F7E9822514be443A4800529">wstETH</option>
+      </select><br><br>
+  
+      <label for="add_token1">Token 1 :</label>
+      <select id="add_token1">
+        <option value="0xaf88d065e77c8cC2239327C5EDb3A432268e5831">USDC</option>
+        <option value="0x93b346b6BC2548dA6A1E7d98E9a421B42541425b">LUSD</option>
+        <option value="0xda10009cbd5d07dd0cecc66161fc93d7c9000da1">DAI</option>
+        <option value="0x82af49447d8a07e3bd95bd0d56f35241523fbab1">wETH</option>
+        <option value="0x5979D7b546E38E414F7E9822514be443A4800529">wstETH</option>
+      </select><br><br>
+  
+      <label for="add_fee">Frais :</label>
+      <select id="add_fee">
+          <option value="100">0.01%</option>
+          <option value="500">0.05%</option>
+          <option value="3000">0.30%</option>
+          <option value="10000">1.00%</option>
+      </select><br><br>
+  
+      <label for="add_tickLower">Tick Lower :</label>
+      <input type="number" id="add_tickLower" placeholder="Ticker bas"><br><br>
+  
+      <label for="add_tickUpper">Tick Upper :</label>
+      <input type="number" id="add_tickUpper" placeholder="Ticker haut"><br><br>
+  
+      <label for="add_amount0">Montant Token 0 :</label>
+      <input type="number" id="add_amount0" placeholder="Montant désiré"><br><br>
+  
+      <label for="add_amount1">Montant Token 1 :</label>
+      <input type="number" id="add_amount1" placeholder="Montant désiré"><br><br>
+  
+      <button type="button" onclick="addLiquidity()">Créer une nouvelle position</button>
+    </form>
+    
+    <form id="increaseLiquidityForm">
+      <label for="increase_tokenId">TokenId :</label>
+      <input type="number" id="increase_tokenId" placeholder="https://app.uniswap.org/pools/{tokenId}"><br><br>
+
+      <label for="increase_amount0">Token 0 :</label>
+      <input type="number" id="increase_amount0" placeholder="Montant désiré"><br><br>
+      
+      <label for="increase_amount1">Token 1 :</label>
+      <input type="number" id="increase_amount1" placeholder="Montant désiré"><br><br>
+      
+      <button type="button" onclick="increaseLiquidity()">Augmenter la Liquidité</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
