@@ -4,31 +4,27 @@
   <meta charset="UTF-8">
   <title>Uniswap V3 - LP</title>
   <style>
-   #content {
-    width: 80%; /* Ajustez la largeur de la zone de contenu en fonction de vos préférences */
-    margin: 0 auto; /* Centre la zone de contenu horizontalement */
-    overflow: auto; /* Ajoute un débordement automatique si le contenu est plus large que la fenêtre */
-  }
+    #content {
+      width: 80%; /* Ajustez la largeur de la zone de contenu en fonction de vos préférences */
+      margin: 0 auto; /* Centre la zone de contenu horizontalement */
+      overflow: auto; /* Ajoute un débordement automatique si le contenu est plus large que la fenêtre */
+    }
 
-  #increaseLiquidityForm,
-  #addLiquidityForm {
-    width: 48%;
-    float: left;
-    margin-top: 40px;
-    margin-right: 2%;
-    margin-bottom: 20px; /* Espace entre les deux formulaires */
-  }
+    #increaseLiquidityForm,
+    #addLiquidityForm {
+      width: 48%;
+      float: left;
+      margin-top: 40px;
+      margin-right: 2%;
+      margin-bottom: 20px; /* Espace entre les deux formulaires */
+    }
 
-  /* Effacer le flottement après les formulaires */
-  #content:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-
-
-
+    /* Effacer le flottement après les formulaires */
+    #content:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
     #userDetails {
       position: absolute;
       top: 20px;
@@ -40,6 +36,15 @@
       top: 20px;
       right: 20px;
       margin-right: 10px;
+    }
+    
+    .inline {
+      display: inline-block;
+      margin: 0 80px;
+    }
+    .block {
+      display: block;
+      margin: 20px 80px;
     }
   </style>
 </head>
@@ -58,60 +63,113 @@
   <div id="content" style="display: none;">
     <p id="userAddress"></p>
 
-    <form id="addLiquidityForm">
-      <label for="add_token0">Token 0 :</label>
-      <select id="add_token0">
+    <!-- Check allowance -->
+    <div class="inline">
+      <h3>Check allowance :</h3>
+      <p>
+        Amount allowed for token 0 : <span id="allowedAmount0"></span><br>
+        Amount allowed for token 1 : <span id="allowedAmount1"></span><br>
+        <button type="button" onclick="checkAllowance()">Check allowance</button>
+      </p>
+    </div>
+
+    <!-- Increase allowance -->
+    <div class="inline">
+      <h3>Increase allowance :</h3>
+      <p>
+        Increase allowance for token 0 :
+        <input type="number" id="increaseAllowance0" placeholder="increaseAllowance0"><br><br>
+        <button type="button" onclick="increaseAllowanceToken0()">Increase allowance token 0</button>
+        <br><br>
+        Increase allowance for token 1 :
+        <input type="number" id="increaseAllowance1" placeholder="increaseAllowance1"><br><br>
+        <button type="button" onclick="increaseAllowanceToken1()">Increase allowance token 1</button>
+      </p>
+    </div>
+
+    <!-- Get tick spacing -->
+    <div class="inline">
+      <h3>Get tick spacing :</h3>
+      <form id="checkPoolTickSpacing">
+        <label for="poolTickSpacing">Pool address :</label>
+        <select id="poolTickSpacing">
+          <option value="0x35218a1cbac5bbc3e57fd9bd38219d37571b3537">UniV3 wstETH-WETH 0.01%</option>
+          <option value="0x3d18c836be1674e8ecc6906224c3e871a1b3a13f">UniV3 USDC-LUSD</option>
+        </select>
+        <button type="button" onclick="getTickSpacing()">Get tick spacing</button>
+        <br><br>
+        Tick spacing : <span id="tickSpacing"></span>
+      </form>
+    </div>
+
+    <!-- Add liquidity -->
+    <div class="block">
+      <h3>Add liquidity :</h3>
+      <form id="addLiquidityForm">
+        <label for="add_token0">Token 0 :</label>
+        <select id="add_token0">
+            <option value="0xaf88d065e77c8cC2239327C5EDb3A432268e5831">USDC</option>
+            <option value="0x93b346b6BC2548dA6A1E7d98E9a421B42541425b">LUSD</option>
+            <option value="0xda10009cbd5d07dd0cecc66161fc93d7c9000da1">DAI</option>
+            <option value="0x82af49447d8a07e3bd95bd0d56f35241523fbab1">wETH</option>
+            <option value="0x5979D7b546E38E414F7E9822514be443A4800529">wstETH</option>
+        </select><br><br>
+    
+        <label for="add_token1">Token 1 :</label>
+        <select id="add_token1">
           <option value="0xaf88d065e77c8cC2239327C5EDb3A432268e5831">USDC</option>
           <option value="0x93b346b6BC2548dA6A1E7d98E9a421B42541425b">LUSD</option>
           <option value="0xda10009cbd5d07dd0cecc66161fc93d7c9000da1">DAI</option>
           <option value="0x82af49447d8a07e3bd95bd0d56f35241523fbab1">wETH</option>
           <option value="0x5979D7b546E38E414F7E9822514be443A4800529">wstETH</option>
-      </select><br><br>
-  
-      <label for="add_token1">Token 1 :</label>
-      <select id="add_token1">
-        <option value="0xaf88d065e77c8cC2239327C5EDb3A432268e5831">USDC</option>
-        <option value="0x93b346b6BC2548dA6A1E7d98E9a421B42541425b">LUSD</option>
-        <option value="0xda10009cbd5d07dd0cecc66161fc93d7c9000da1">DAI</option>
-        <option value="0x82af49447d8a07e3bd95bd0d56f35241523fbab1">wETH</option>
-        <option value="0x5979D7b546E38E414F7E9822514be443A4800529">wstETH</option>
-      </select><br><br>
-  
-      <label for="add_fee">Frais :</label>
-      <select id="add_fee">
-          <option value="100">0.01%</option>
-          <option value="500">0.05%</option>
-          <option value="3000">0.30%</option>
-          <option value="10000">1.00%</option>
-      </select><br><br>
-  
-      <label for="add_tickLower">Tick Lower :</label>
-      <input type="number" id="add_tickLower" placeholder="Ticker bas"><br><br>
-  
-      <label for="add_tickUpper">Tick Upper :</label>
-      <input type="number" id="add_tickUpper" placeholder="Ticker haut"><br><br>
-  
-      <label for="add_amount0">Montant Token 0 :</label>
-      <input type="number" id="add_amount0" placeholder="Montant désiré"><br><br>
-  
-      <label for="add_amount1">Montant Token 1 :</label>
-      <input type="number" id="add_amount1" placeholder="Montant désiré"><br><br>
-  
-      <button type="button" onclick="addLiquidity()">Créer une nouvelle position</button>
-    </form>
+        </select><br><br>
     
-    <form id="increaseLiquidityForm">
-      <label for="increase_tokenId">TokenId :</label>
-      <input type="number" id="increase_tokenId" placeholder="https://app.uniswap.org/pools/{tokenId}"><br><br>
+        <label for="add_fee">Frais :</label>
+        <select id="add_fee">
+            <option value="100">0.01%</option>
+            <option value="500">0.05%</option>
+            <option value="3000">0.30%</option>
+            <option value="10000">1.00%</option>
+        </select><br><br>
+    
+        <label for="add_tickLower">Tick Lower :</label>
+        <input type="number" id="add_tickLower" placeholder="Ticker bas"><br><br>
+    
+        <label for="add_tickUpper">Tick Upper :</label>
+        <input type="number" id="add_tickUpper" placeholder="Ticker haut"><br><br>
+    
+        <label for="add_amount0">Montant Token 0 :</label>
+        <input type="number" id="add_amount0" placeholder="Montant désiré"><br><br>
+    
+        <label for="add_amount1">Montant Token 1 :</label>
+        <input type="number" id="add_amount1" placeholder="Montant désiré"><br><br>
 
-      <label for="increase_amount0">Token 0 :</label>
-      <input type="number" id="increase_amount0" placeholder="Montant désiré"><br><br>
-      
-      <label for="increase_amount1">Token 1 :</label>
-      <input type="number" id="increase_amount1" placeholder="Montant désiré"><br><br>
-      
-      <button type="button" onclick="increaseLiquidity()">Augmenter la Liquidité</button>
-    </form>
+        <label for="add_deadline">Deadline :</label>
+        <input type="number" id="add_deadline" placeholder="Deadline"><br><br>
+    
+        <button type="button" onclick="addLiquidity()">Créer une nouvelle position</button>
+      </form>
+      </div>
+    
+    <!-- Increase liquidity -->
+    <div class="block">
+      <h3>Increase liquidity :</h3>
+      <form id="increaseLiquidityForm">
+        <label for="increase_tokenId">TokenId :</label>
+        <input type="number" id="increase_tokenId" placeholder="https://app.uniswap.org/pools/{tokenId}"><br><br>
+
+        <label for="increase_amount0">Token 0 :</label>
+        <input type="number" id="increase_amount0" placeholder="Montant désiré"><br><br>
+        
+        <label for="increase_amount1">Token 1 :</label>
+        <input type="number" id="increase_amount1" placeholder="Montant désiré"><br><br>
+
+        <label for="increase_deadline">Deadline :</label>
+        <input type="number" id="increase_deadline" placeholder="Deadline"><br><br>
+        
+        <button type="button" onclick="increaseLiquidity()">Augmenter la Liquidité</button>
+      </form>
+    </div>
   </div>
 
   <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
